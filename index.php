@@ -14,6 +14,17 @@ Text Domain: my-toolset
 */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+add_action('wp_enqueue_scripts', 'prefix_load_scripts');
+
+function prefix_load_scripts() {                           
+    $deps = array('jquery');
+    $version= '1.0'; 
+    $in_footer = true;    
+    wp_enqueue_style( 'dlinq-cat-counter-css', plugin_dir_url( __FILE__) . 'css/prefix-main.css');
+}
+
+
+
 function dlinq_cat_counter(){
    if(current_user_can('administrator')){
        $this_year = date("Y"); //get current year
@@ -53,8 +64,9 @@ function dlinq_by_year($year){
       );
       $year_query = new WP_Query($args);
       $cat_name = $cat_id->name;
+      $cat_slug = $cat_id->slug;
       $count = $year_query->found_posts;
-      $html .= "<li>{$cat_name} - {$count}</li>";
+      $html .= "<li data-count='{$count}' data-name='{$cat_slug}'>{$cat_name} - {$count}</li>";
    }
    $html .= "</ul>";
    return $html;
